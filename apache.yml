@@ -1,0 +1,18 @@
+- hosts: webserver1
+  sudo: yes
+  tasks:
+    - name: install apache2
+      apt: name=apache2 update_cache=yes state=latest
+
+    - name: enabled mod_rewrite
+      apache2_module: name=rewrite state=present
+      notify:
+        - restart apache2
+    - name: Deploy static website
+      copy:
+        src: index.html
+        dest: /var/www/html/	
+
+  handlers:
+    - name: restart apache2
+      service: name=apache2 state=restarted
